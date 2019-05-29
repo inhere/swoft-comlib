@@ -5,7 +5,6 @@ namespace Inhere\Comlib;
 use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
 use Swoft\Bean\Exception\ContainerException;
-use Swoft\Console\Console;
 use Swoft\Http\Message\ContentType;
 use Swoft\Http\Message\Response;
 use Swoole\Coroutine\Http\Client;
@@ -13,8 +12,10 @@ use function array_merge;
 use function http_build_query;
 use function in_array;
 use function is_array;
+use function is_string;
 use function json_encode;
 use function parse_url;
+use function preg_replace;
 use function strpos;
 use function strtoupper;
 
@@ -34,6 +35,25 @@ class HttpClient
         'path'     => '/',
         'query'    => '',
         'fragment' => '',
+    ];
+
+    /**
+     * @var array
+     */
+    private $options = [];
+
+    /**
+     * @var string
+     */
+    private $fullUrl = '';
+
+    /**
+     * @var array
+     */
+    private $rawResult = [
+        'errCode' => 0,
+        'errMsg'  => 0,
+        'status'  => 200,
     ];
 
     /**
@@ -111,11 +131,11 @@ class HttpClient
 
         $client->execute($uriPath);
 
-        Console::log("request $url, data:", [
+        $this->rawResult = [
             'errCode' => $client->errCode,
             'errMsg'  => $client->errMsg,
             'status'  => $client->statusCode,
-        ]);
+        ];
 
         // trans to psr7 response
         $resp = new Response();
@@ -136,6 +156,10 @@ class HttpClient
      */
     private function configRequest(Client $client, array $info, array $options): string
     {
+        if ($this->options) {
+            $options = array_merge($this->options, $options);
+        }
+
         $uriPath  = $info['path'];
         $method   = $options['method'] ?: 'GET';
         $headers  = $options['headers'] ?? [];
@@ -172,8 +196,17 @@ class HttpClient
             if ($postData) {
                 $client->setData($postData);
             }
-        } elseif ($queryMap = $options['query'] ?? $sendData) {
-            $queryString = http_build_query($queryMap);
+        } elseif ($sendData) {
+            $queryString = $this->buildQuery($sendData);
+
+            // check sep check
+            $sepChar = strpos($uriPath, '?') > 0 ? '&' : '?';
+            $uriPath = $uriPath . $sepChar . $queryString;
+        }
+
+        // has query data
+        if ($queryMap = $options['query'] ?? 0) {
+            $queryString = $this->buildQuery($queryMap);
 
             // check sep check
             $sepChar = strpos($uriPath, '?') > 0 ? '&' : '?';
@@ -215,7 +248,7 @@ class HttpClient
      *
      * @return array
      */
-    private function parseUrl(string $url): array
+    public function parseUrl(string $url): array
     {
         $info = array_merge(self::DEFAULT_URL_DATA, parse_url($url));
 
@@ -224,5 +257,48 @@ class HttpClient
         }
 
         return $info;
+    }
+
+    /**
+     * @param array|string $queryData
+     *
+     * @return string
+     */
+    public function buildQuery($queryData): string
+    {
+        // is string
+        if (is_string($queryData)) {
+            return $queryData;
+        }
+
+        // array: k-v map
+        return preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', http_build_query($queryData));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullUrl(): string
+    {
+        return $this->fullUrl;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRawResult(): array
+    {
+        return $this->rawResult;
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return HttpClient
+     */
+    public function setOptions(array $options): self
+    {
+        $this->options = $options;
+        return $this;
     }
 }
