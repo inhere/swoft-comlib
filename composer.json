@@ -1,0 +1,35 @@
+{
+  "name": "inhere/google-translate-php",
+  "description": "Some simple common tool library for swoft 2",
+  "keywords": [
+    "swoft",
+    "swoft-component",
+    "php"
+  ],
+  "license": "MIT",
+  "homepage": "http://github.com/inhere/swoft-comlib",
+  "authors": [
+    {
+      "name": "inhere",
+      "email": "in.798@qq.com"
+    }
+  ],
+  "require": {
+    "php": "^7.1",
+    "ext-json": "*",
+    "ext-mbstring": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Inhere\\Comlib\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Inhere\\ComlibTest\\": "test/"
+    }
+  }
+}
