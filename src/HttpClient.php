@@ -131,6 +131,7 @@ class HttpClient
 
         $client->execute($uriPath);
 
+        $this->fullUrl   = $info['host'] . $uriPath;
         $this->rawResult = [
             'errCode' => $client->errCode,
             'errMsg'  => $client->errMsg,
@@ -160,7 +161,7 @@ class HttpClient
             $options = array_merge($this->options, $options);
         }
 
-        $uriPath  = $info['path'];
+        $uriPath  = $info['path'] . ($info['query'] ? '?' . $info['query'] : '');
         $method   = $options['method'] ?: 'GET';
         $headers  = $options['headers'] ?? [];
         $sendData = $options['data'] ?? [];
@@ -272,7 +273,7 @@ class HttpClient
         }
 
         // array: k-v map
-        return preg_replace('/%5B(?:[0-9]|[1-9][0-9]+)%5D=/', '=', http_build_query($queryData));
+        return preg_replace('/%5B(?:\d|[1-9]\d+)%5D=/', '=', http_build_query($queryData));
     }
 
     /**
