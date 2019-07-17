@@ -173,7 +173,7 @@ class GoogleTranslator extends AbstractTranslator
         $sentences = '';
 
         if(!$resultArray) {
-            $message = 'Google detected unusual traffic from your computer network, try again later (2 - 48 hours)';
+            $message = 'Google detected unusual traffic from your computer network, try again later (2 - 48 hours). raw: ' . $json;
             throw new RuntimeException($message);
         }
 
