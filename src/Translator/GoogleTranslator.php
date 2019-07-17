@@ -118,7 +118,7 @@ class GoogleTranslator extends AbstractTranslator
             'key' => $this->key,
             'hl'  => $params['tl'],
         ]);
-        $queryString = '&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&';
+        $queryString = '?dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&';
         $queryString .= $this->client->buildQuery($queryParams);
 
         $resp = $this->client->post($baseUrl . $queryString, $params, [

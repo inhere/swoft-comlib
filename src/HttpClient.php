@@ -131,7 +131,7 @@ class HttpClient
 
         $client->execute($uriPath);
 
-        $this->fullUrl   = $info['host'] . $uriPath;
+        $this->fullUrl   = $info['scheme'] . '://' . $info['host'] . $uriPath;
         $this->rawResult = [
             'errCode' => $client->errCode,
             'errMsg'  => $client->errMsg,
