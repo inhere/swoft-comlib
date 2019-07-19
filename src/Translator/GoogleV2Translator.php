@@ -13,7 +13,6 @@ use function strlen;
 /**
  * Class GoogleTranslator
  *
- * @link https://cloud.google.com/translate/docs/reference/rest/v2/translate
  * @Bean("gv2Translator")
  */
 class GoogleV2Translator extends AbstractTranslator
@@ -22,7 +21,7 @@ class GoogleV2Translator extends AbstractTranslator
     // public const CN_BASH_URL = 'https://translate.google.cn/translate_a/single';
 
     /**
-     * @link https://github.com/statickidz/php-google-translate-free
+     * @link https://cloud.google.com/translate/docs/reference/rest/v2/translate
      */
     protected const POST_PARAMS = [
         'q'      => '',
@@ -43,9 +42,9 @@ class GoogleV2Translator extends AbstractTranslator
     /**
      * @param string $text
      * @param array  $params
-     * - sl Source language
-     * - tl Target language
-     * - fmt Text format: html(default), text
+     * - source  Source language
+     * - target  Target language
+     * - format  Text format: html(default), text
      *
      * @return array
      * @throws ReflectionException
@@ -57,11 +56,11 @@ class GoogleV2Translator extends AbstractTranslator
             throw new InvalidArgumentException('Maximum number of characters exceeded: 5000');
         }
 
+        $params  = array_merge(self::POST_PARAMS, $params);
         $headers = [
             'Accept'       => 'application/json',
             'Content-Type' => 'application/x-www-form-urlencoded',
         ];
-        $params = array_merge(self::POST_PARAMS, $params);
 
         // Add text
         $params['q']   = $text;
@@ -73,28 +72,12 @@ class GoogleV2Translator extends AbstractTranslator
 
         /* result:
          {
-          "sentences": [
-            {
-              "trans": "Welcome",
-              "orig": "欢迎你",
-              "backend": 1
-            },
-            {
-              "src_translit": "Huānyíng nǐ"
-            }
-          ],
-          "src": "zh-CN",
-          "confidence": 1,
-          "ld_result": {
-            "srclangs": [
-              "zh-CN"
-            ],
-            "srclangs_confidences": [
-              1
-            ],
-            "extended_srclangs": [
-              "zh-CN"
-            ]
+          "data": {
+              "translations": [
+                {
+                    "translatedText": "..."
+                }
+             ]
           }
         }
          */
