@@ -75,14 +75,14 @@ class HttpClient
      * Send POST request
      *
      * @param string $url
-     * @param array  $data
+     * @param mixed  $data
      * @param array  $options
      *
      * @return Response
      * @throws ReflectionException
      * @throws ContainerException
      */
-    public function post(string $url, array $data, array $options = []): Response
+    public function post(string $url, $data, array $options = []): Response
     {
         $options['data'] = $data;
 
@@ -164,7 +164,7 @@ class HttpClient
         $uriPath  = $info['path'] . ($info['query'] ? '?' . $info['query'] : '');
         $method   = $options['method'] ?: 'GET';
         $headers  = $options['headers'] ?? [];
-        $sendData = $options['data'] ?? [];
+        $sendData = $options['data'] ?? null;
 
         // set request method
         $client->setMethod($method = strtoupper($method));
