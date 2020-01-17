@@ -2,9 +2,7 @@
 
 namespace Inhere\Comlib;
 
-use ReflectionException;
 use Swoft\Bean\Annotation\Mapping\Bean;
-use Swoft\Bean\Exception\ContainerException;
 use Swoft\Http\Message\ContentType;
 use Swoft\Http\Message\Response;
 use Swoole\Coroutine\Http\Client;
@@ -63,8 +61,6 @@ class HttpClient
      * @param array  $options
      *
      * @return Response
-     * @throws ReflectionException
-     * @throws ContainerException
      */
     public function get(string $url, array $options = []): Response
     {
@@ -79,8 +75,6 @@ class HttpClient
      * @param array  $options
      *
      * @return Response
-     * @throws ReflectionException
-     * @throws ContainerException
      */
     public function post(string $url, $data, array $options = []): Response
     {
@@ -97,8 +91,6 @@ class HttpClient
      * @param array  $options
      *
      * @return Response
-     * @throws ReflectionException
-     * @throws ContainerException
      */
     public function json(string $url, array $data, array $options = []): Response
     {
@@ -113,8 +105,6 @@ class HttpClient
      * @param array  $options
      *
      * @return Response
-     * @throws ReflectionException
-     * @throws ContainerException
      */
     public function request(string $method, string $url, array $options = []): Response
     {
